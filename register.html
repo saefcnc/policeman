@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#3C1361">
+  <title>رجل الشرطة - إنشاء حساب جديد</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #3C1361;
+      --secondary-color: #A4508B;
+      --accent-color: #FFD700;
+      --text-light: #ffffff;
+      --text-dark: #333333;
+      --error-color: #e74c3c;
+      --success-color: #2ecc71;
+    }
+    
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      font-family: 'Cairo', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(180deg, #A4508B, #3C1361);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    
+    .container {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    .container img {
+      display: block;
+      margin: 0 auto 20px;
+      width: 80px;
+      height: auto;
+    }
+    
+    .container h2 {
+      text-align: center;
+      color: var(--text-light);
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+    
+    .input-group {
+      margin-bottom: 15px;
+      position: relative;
+    }
+    
+    .container input {
+      width: 100%;
+      padding: 15px;
+      margin: 5px 0;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 16px;
+      background: rgba(255,255,255,0.9);
+      transition: all 0.3s ease;
+    }
+    
+    .container input:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+    }
+    
+    .password-toggle {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--secondary-color);
+    }
+    
+    .error-message {
+      color: var(--error-color);
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+    
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .btn {
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+      transition: all 0.3s ease;
+      text-align: center;
+      width: 100%;
+    }
+    
+    .btn-primary {
+      background: var(--accent-color);
+      color: var(--text-dark);
+    }
+    
+    .btn-secondary {
+      background: rgba(255,255,255,0.2);
+      color: var(--text-light);
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .terms {
+      color: var(--text-light);
+      font-size: 14px;
+      text-align: center;
+      margin-top: 15px;
+    }
+    
+    .terms a {
+      color: var(--accent-color);
+      text-decoration: none;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px;
+      }
+      
+      .container input, .btn {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="https://cdn-icons-png.flaticon.com/512/1063/1063393.png" alt="شعار الشرطة">
+    <h2>إنشاء حساب جديد</h2>
+    
+    <div class="input-group">
+      <input type="text" id="fullName" placeholder="الاسم الكامل" aria-label="الاسم الكامل" required>
+    </div>
+    
+    <div class="input-group">
+      <input type="text" id="nationalId" placeholder="رقم الهوية الوطنية" aria-label="رقم الهوية الوطنية" inputmode="numeric" pattern="[0-9]*" required>
+    </div>
+    
+    <div class="input-group">
+      <input type="text" id="phone" placeholder="رقم الجوال" aria-label="رقم الجوال" inputmode="tel" required>
+    </div>
+    
+    <div class="input-group">
+      <input type="email" id="email" placeholder="البريد الإلكتروني" aria-label="البريد الإلكتروني" required>
+    </div>
+    
+    <div class="input-group">
+      <input type="password" id="password" placeholder="كلمة المرور" aria-label="كلمة المرور" required>
+      <i class="fas fa-eye password-toggle" id="togglePassword" aria-hidden="true"></i>
+    </div>
+    
+    <div class="input-group">
+      <input type="password" id="confirmPassword" placeholder="تأكيد كلمة المرور" aria-label="تأكيد كلمة المرور" required>
+      <div id="passwordError" class="error-message" role="alert">كلمات المرور غير متطابقة</div>
+    </div>
+    
+    <div class="button-group">
+      <button class="btn btn-primary" id="registerBtn">تسجيل حساب جديد</button>
+      <button class="btn btn-secondary" onclick="location.href='index.html'">لديك حساب بالفعل؟ تسجيل الدخول</button>
+    </div>
+    
+    <div class="terms">
+      بالضغط على "تسجيل حساب جديد" فإنك توافق على <a href="#">الشروط والأحكام</a> و<a href="#">سياسة الخصوصية</a>
+    </div>
+  </div>
+
+  <script>
+    // تبديل عرض كلمة المرور
+    const togglePassword = document.getElementById('togglePassword');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+    
+    togglePassword.addEventListener('click', function() {
+      const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+      password.setAttribute('type', type);
+      confirmPassword.setAttribute('type', type);
+      this.classList.toggle('fa-eye-slash');
+    });
+    
+    // التحقق من تطابق كلمات المرور
+    confirmPassword.addEventListener('input', function() {
+      const passwordError = document.getElementById('passwordError');
+      if (password.value !== confirmPassword.value && confirmPassword.value) {
+        passwordError.style.display = 'block';
+      } else {
+        passwordError.style.display = 'none';
+      }
+    });
+    
+    // معالجة تسجيل الحساب
+    document.getElementById('registerBtn').addEventListener('click', function() {
+      const passwordError = document.getElementById('passwordError');
+      
+      // التحقق من صحة البيانات
+      if (password.value !== confirmPassword.value) {
+        passwordError.style.display = 'block';
+        return;
+      }
+      
+      // هنا يمكنك إضافة كود إرسال البيانات إلى الخادم
+      alert('جاري إنشاء الحساب... سيتم توجيهك إلى صفحة تسجيل الدخول بعد الانتهاء');
+      // location.href = 'index.html';
+    });
+    
+    // Service Worker للتطبيق التقدمي (PWA)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').then(registration => {
+          console.log('ServiceWorker registration successful');
+        }).catch(err => {
+          console.log('ServiceWorker registration failed: ', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>

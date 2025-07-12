@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#3C1361">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="تطبيق رجل الشرطة للاستعلام عن المخالفات والبطاقات الوطنية">
+  <title>رجل الشرطة – استعلام</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" as="style">
+  <style>
+    :root {
+      --primary-color: #3C1361;
+      --secondary-color: #A4508B;
+      --accent-color: #FFD700;
+      --text-light: #ffffff;
+      --text-dark: #333333;
+      --error-color: #e74c3c;
+      --success-color: #2ecc71;
+    }
+    
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      font-family: 'Cairo', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f3e7f5;
+      min-height: 100vh;
+      line-height: 1.6;
+      text-align: right;
+    }
+    
+    h2 {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 25px;
+      font-weight: 700;
+    }
+    
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+    
+    .card h3 {
+      color: var(--primary-color);
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+    
+    .input-group {
+      position: relative;
+      margin-bottom: 15px;
+    }
+    
+    .card input, .card button {
+      width: 100%;
+      margin-top: 0;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    
+    .card input {
+      border: 1px solid #ddd;
+      background: #f9f9f9;
+      padding-right: 40px;
+    }
+    
+    .card input:focus {
+      outline: none;
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 3px rgba(164, 80, 139, 0.2);
+    }
+    
+    .input-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--secondary-color);
+    }
+    
+    .card button {
+      background: var(--secondary-color);
+      color: var(--text-light);
+      font-weight: bold;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card button:hover, .card button:focus {
+      background: #77286F;
+      transform: translateY(-2px);
+    }
+    
+    .card button:active {
+      transform: translateY(0);
+    }
+    
+    .card button .button-text {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .card button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 5px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.5);
+      opacity: 0;
+      border-radius: 100%;
+      transform: scale(1, 1) translate(-50%, -50%);
+      transform-origin: 50% 50%;
+    }
+    
+    .card button:focus:not(:active)::after {
+      animation: ripple 0.6s ease-out;
+    }
+    
+    .nfc-icon {
+      font-size: 24px;
+      margin-left: 10px;
+    }
+    
+    .nav {
+      text-align: center;
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .nav button {
+      padding: 12px 25px;
+      background: var(--accent-color);
+      border: none;
+      border-radius: 8px;
+      font-family: 'Cairo', sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: var(--text-dark);
+      min-width: 120px;
+    }
+    
+    .nav button:hover, .nav button:focus {
+      background: #FFC300;
+      transform: translateY(-2px);
+    }
+    
+    .nav button:active {
+      transform: translateY(0);
+    }
+    
+    .loading {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    
+    .loading.active {
+      display: flex;
+    }
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--accent-color);
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    .loading-text {
+      color: white;
+      margin-top: 15px;
+      font-size: 18px;
+    }
+    
+    .error-message {
+      color: var(--error-color);
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+    
+    /* واجهة الكاميرا الوهمية */
+    .camera-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #000;
+      z-index: 10000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+    }
+    
+    .camera-overlay.active {
+      display: flex;
+    }
+    
+    .camera-view {
+      width: 100%;
+      max-width: 400px;
+      height: 60vh;
+      background: #333;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .camera-view::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+      animation: scanning 2s infinite linear;
+    }
+    
+    .camera-controls {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    
+    .camera-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      border: 3px solid rgba(255,255,255,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .camera-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    
+    .camera-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+    
+    .camera-close {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    
+    .camera-instruction {
+      color: white;
+      text-align: center;
+      margin-bottom: 20px;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes scanning {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 0.7; }
+      50% { opacity: 1; }
+      100% { opacity: 0.7; }
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes ripple {
+      0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+      }
+      100% {
+        transform: scale(20, 20);
+        opacity: 0;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      body {
+        padding: 15px;
+      }
+      
+      .card {
+        padding: 15px;
+      }
+      
+      .card input, .card button {
+        padding: 12px;
+      }
+      
+      .nav {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .nav button {
+        width: 100%;
+      }
+      
+      .camera-view {
+        height: 50vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>اختر طريقة الاستعلام</h2>
+
+  <div class="card" tabindex="0" role="region" aria-labelledby="nationalCardHeading">
+    <h3 id="nationalCardHeading"><i class="fas fa-id-card" aria-hidden="true"></i> إدخال رقم البطاقة الوطنية</h3>
+    <div class="input-group">
+      <input type="text" 
+             id="nationalId" 
+             placeholder="أدخل الرقم الوطني" 
+             aria-label="رقم البطاقة الوطنية" 
+             inputmode="numeric" 
+             pattern="[0-9]{10}" 
+             maxlength="10"
+             required
+             aria-required="true">
+      <i class="fas fa-id-card input-icon" aria-hidden="true"></i>
+    </div>
+    <div id="nationalIdError" class="error-message" role="alert">
+      الرقم الوطني يجب أن يتكون من 10 أرقام
+    </div>
+    <button id="nationalIdBtn" role="button" aria-label="استعلام باستخدام الرقم الوطني">
+      <span class="button-text">استعلام</span>
+    </button>
+  </div>
+
+  <div class="card" tabindex="0" role="region" aria-labelledby="nfcCardHeading">
+    <h3 id="nfcCardHeading"><i class="fas fa-wifi nfc-icon" aria-hidden="true"></i> قراءة البطاقة باستخدام NFC</h3>
+    <button id="nfcBtn" role="button" aria-label="قراءة البطاقة باستخدام NFC">
+      <span class="button-text">تشغيل NFC</span>
+    </button>
+  </div>
+
+  <div class="nav">
+    <button onclick="location.href='index.html'" role="button" aria-label="عودة إلى الصفحة الرئيسية">
+      <span class="button-text">عودة</span>
+    </button>
+  </div>
+
+  <div class="loading" id="loadingIndicator" role="status" aria-live="polite">
+    <div class="spinner" aria-hidden="true"></div>
+    <div class="loading-text">جاري معالجة الطلب...</div>
+  </div>
+
+  <!-- واجهة الكاميرا الوهمية -->
+  <div class="camera-overlay" id="cameraOverlay">
+    <div class="camera-header">
+      <div></div>
+      <h3 style="color: white;">قراءة البطاقة الوطنية</h3>
+      <button class="camera-close" id="closeCamera">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="camera-instruction">
+      <i class="fas fa-info-circle"></i> قرب البطاقة الوطنية من الكاميرا
+    </div>
+    
+    <div class="camera-view" id="cameraView">
+      <div style="color: white; text-align: center; padding: 20px;">
+        <i class="fas fa-id-card" style="font-size: 50px; margin-bottom: 15px;"></i>
+        <p>توجيه البطاقة نحو الكاميرا</p>
+      </div>
+    </div>
+    
+    <div class="camera-controls">
+      <button class="camera-btn" id="captureBtn">
+        <i class="fas fa-camera"></i>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // NFC Functionality
+    const nfcBtn = document.getElementById('nfcBtn');
+    const nationalIdBtn = document.getElementById('nationalIdBtn');
+    const nationalIdInput = document.getElementById('nationalId');
+    const nationalIdError = document.getElementById('nationalIdError');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const cameraOverlay = document.getElementById('cameraOverlay');
+    const closeCamera = document.getElementById('closeCamera');
+    const captureBtn = document.getElementById('captureBtn');
+    const cameraView = document.getElementById('cameraView');
+    
+    // Validate National ID
+    function validateNationalId() {
+      const nationalId = nationalIdInput.value.trim();
+      const isValid = /^\d{10}$/.test(nationalId);
+      
+      if (!isValid && nationalId) {
+        nationalIdError.style.display = 'block';
+        nationalIdInput.setAttribute('aria-invalid', 'true');
+        return false;
+      } else {
+        nationalIdError.style.display = 'none';
+        nationalIdInput.setAttribute('aria-invalid', 'false');
+        return true;
+      }
+    }
+    
+    // Show loading indicator
+    function showLoading(message = 'جاري معالجة الطلب...') {
+      loadingIndicator.querySelector('.loading-text').textContent = message;
+      loadingIndicator.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    // Hide loading indicator
+    function hideLoading() {
+      loadingIndicator.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    // Simulate API call
+    function simulateApiCall(duration = 1500) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve(true);
+        }, duration);
+      });
+    }
+    
+    // NFC Functionality with Camera Simulation
+    async function initiateNFC() {
+      // عرض واجهة الكاميرا الوهمية
+      cameraOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      
+      // محاكاة اكتشاف البطاقة بعد 3 ثواني إذا لم يضغط المستخدم
+      const autoDetect = setTimeout(async () => {
+        if (cameraOverlay.classList.contains('active')) {
+          await simulateCardDetection();
+        }
+      }, 3000);
+      
+      // إلغاء الاكتشاف التلقائي إذا أغلق المستخدم الكاميرا
+      closeCamera.addEventListener('click', () => {
+        clearTimeout(autoDetect);
+      }, { once: true });
+    }
+    
+    // محاكاة اكتشاف البطاقة
+    async function simulateCardDetection() {
+      // عرض رسالة الاكتشاف
+      cameraView.innerHTML = `
+        <div style="color: white; text-align: center; padding: 20px;">
+          <i class="fas fa-check-circle" style="font-size: 50px; color: #2ecc71; margin-bottom: 15px;"></i>
+          <p>تم اكتشاف البطاقة بنجاح</p>
+          <p>جاري قراءة البيانات...</p>
+        </div>
+      `;
+      
+      // محاكاة قراءة البيانات
+      await simulateApiCall(2000);
+      
+      // إغلاق الكاميرا والانتقال لصفحة النتائج
+      cameraOverlay.classList.remove('active');
+      showLoading('جاري تحميل بيانات البطاقة...');
+      
+      await simulateApiCall(1000);
+      location.href = 'result.html';
+    }
+    
+    // Handle national ID submission
+    async function handleNationalIdSubmit() {
+      if (!validateNationalId()) return;
+      
+      if (!nationalIdInput.value.trim()) {
+        nationalIdError.textContent = 'يرجى إدخال الرقم الوطني';
+        nationalIdError.style.display = 'block';
+        nationalIdInput.setAttribute('aria-invalid', 'true');
+        return;
+      }
+      
+      showLoading();
+      
+      try {
+        await simulateApiCall();
+        location.href = 'result.html';
+      } catch (error) {
+        hideLoading();
+        alert('حدث خطأ أثناء معالجة الطلب');
+        console.error('API Error:', error);
+      }
+    }
+    
+    // Event Listeners
+    nationalIdInput.addEventListener('input', validateNationalId);
+    nationalIdInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleNationalIdSubmit();
+      }
+    });
+    
+    nationalIdBtn.addEventListener('click', handleNationalIdSubmit);
+    nfcBtn.addEventListener('click', initiateNFC);
+    
+    // إغلاق واجهة الكاميرا
+    closeCamera.addEventListener('click', () => {
+      cameraOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+    
+    // محاكاة التقاط صورة عند الضغط على زر الكاميرا
+    captureBtn.addEventListener('click', async () => {
+      cameraView.innerHTML = `
+        <div style="color: white; text-align: center; padding: 20px;">
+          <i class="fas fa-camera" style="font-size: 50px; margin-bottom: 15px;"></i>
+          <p>جاري معالجة الصورة...</p>
+        </div>
+      `;
+      
+      await simulateApiCall(1000);
+      await simulateCardDetection();
+    });
+    
+    // Service Worker Registration for PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').then(registration => {
+          console.log('ServiceWorker registration successful');
+        }).catch(err => {
+          console.log('ServiceWorker registration failed: ', err);
+        });
+      });
+    }
+    
+    // Focus management for better accessibility
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.location.hash === '#nfc') {
+        nfcBtn.focus();
+      } else {
+        nationalIdInput.focus();
+      }
+    });
+  </script>
+</body>
+</html>

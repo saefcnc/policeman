@@ -43,6 +43,37 @@
       font-weight: 700;
     }
     
+    .department-selector {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    
+    .department-selector label {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    
+    .department-selector select {
+      width: 100%;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 16px;
+      background: #f9f9f9;
+    }
+    
+    .department-selector select:focus {
+      outline: none;
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 3px rgba(164, 80, 139, 0.2);
+    }
+    
     .card {
       background: #fff;
       border-radius: 12px;
@@ -376,6 +407,18 @@
 <body>
   <h2>اختر طريقة الاستعلام</h2>
 
+  <div class="department-selector" tabindex="0" role="region" aria-labelledby="departmentHeading">
+    <h3 id="departmentHeading"><i class="fas fa-building" aria-hidden="true"></i> الدائرة المراد البحث فيها</h3>
+    <label for="department">اختر الدائرة:</label>
+    <select id="department" aria-label="اختر الدائرة">
+      <option value="">-- اختر الدائرة --</option>
+      <option value="traffic">مديرية المرور العامة</option>
+      <option value="forensic">مديرية الأدلة الجنائية</option>
+      <option value="civil">مديرية الأحوال المدنية والجوازات والإقامة</option>
+      <option value="intelligence">وكالة الاستخبارات والتحقيقات الاتحادية</option>
+    </select>
+  </div>
+
   <div class="card" tabindex="0" role="region" aria-labelledby="nationalCardHeading">
     <h3 id="nationalCardHeading"><i class="fas fa-id-card" aria-hidden="true"></i> إدخال رقم البطاقة الوطنية</h3>
     <div class="input-group">
@@ -455,6 +498,7 @@
     const closeCamera = document.getElementById('closeCamera');
     const captureBtn = document.getElementById('captureBtn');
     const cameraView = document.getElementById('cameraView');
+    const departmentSelect = document.getElementById('department');
     
     // Validate National ID
     function validateNationalId() {
@@ -470,6 +514,16 @@
         nationalIdInput.setAttribute('aria-invalid', 'false');
         return true;
       }
+    }
+    
+    // Validate Department Selection
+    function validateDepartment() {
+      if (!departmentSelect.value) {
+        alert('يرجى اختيار الدائرة المراد البحث فيها');
+        departmentSelect.focus();
+        return false;
+      }
+      return true;
     }
     
     // Show loading indicator
@@ -496,6 +550,8 @@
     
     // NFC Functionality with Camera Simulation
     async function initiateNFC() {
+      if (!validateDepartment()) return;
+      
       // عرض واجهة الكاميرا الوهمية
       cameraOverlay.classList.add('active');
       document.body.style.overflow = 'hidden';
@@ -537,6 +593,7 @@
     
     // Handle national ID submission
     async function handleNationalIdSubmit() {
+      if (!validateDepartment()) return;
       if (!validateNationalId()) return;
       
       if (!nationalIdInput.value.trim()) {
@@ -605,7 +662,7 @@
       if (window.location.hash === '#nfc') {
         nfcBtn.focus();
       } else {
-        nationalIdInput.focus();
+        departmentSelect.focus();
       }
     });
   </script>

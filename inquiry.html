@@ -19,6 +19,7 @@
       --text-dark: #333333;
       --error-color: #e74c3c;
       --success-color: #2ecc71;
+      --border-radius: 12px;
     }
     
     * {
@@ -43,51 +44,83 @@
       font-weight: 700;
     }
     
-    .department-selector {
+    .main-menu {
       background: #fff;
-      border-radius: 12px;
+      border-radius: var(--border-radius);
       padding: 20px;
       margin: 15px 0;
       box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      position: relative;
     }
     
-    .department-selector label {
-      display: block;
-      margin-bottom: 10px;
+    .main-menu h3 {
       color: var(--primary-color);
+      margin-top: 0;
+      margin-bottom: 15px;
       font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
     }
     
-    .department-selector select {
-      width: 100%;
+    .main-menu h3 i {
+      transition: transform 0.3s ease;
+    }
+    
+    .main-menu.active h3 i {
+      transform: rotate(180deg);
+    }
+    
+    .menu-options {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .main-menu.active .menu-options {
+      display: flex;
+    }
+    
+    .menu-option {
       padding: 15px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-family: 'Cairo', sans-serif;
-      font-size: 16px;
       background: #f9f9f9;
+      border-radius: 8px;
+      border: 1px solid #eee;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     
-    .department-selector select:focus {
-      outline: none;
-      border-color: var(--secondary-color);
-      box-shadow: 0 0 0 3px rgba(164, 80, 139, 0.2);
+    .menu-option:hover {
+      background: #f0f0f0;
+      transform: translateX(-5px);
+    }
+    
+    .menu-option i {
+      color: var(--secondary-color);
+    }
+    
+    .query-section {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .query-section.active {
+      display: block;
     }
     
     .card {
       background: #fff;
-      border-radius: 12px;
+      border-radius: var(--border-radius);
       padding: 20px;
       margin: 15px 0;
       box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
-    }
-    
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
     }
     
     .card h3 {
@@ -97,6 +130,7 @@
       font-weight: 600;
       display: flex;
       align-items: center;
+      gap: 10px;
     }
     
     .input-group {
@@ -104,7 +138,7 @@
       margin-bottom: 15px;
     }
     
-    .card input, .card button {
+    .card input, .card select, .card button {
       width: 100%;
       margin-top: 0;
       padding: 15px;
@@ -115,13 +149,13 @@
       transition: all 0.3s ease;
     }
     
-    .card input {
+    .card input, .card select {
       border: 1px solid #ddd;
       background: #f9f9f9;
       padding-right: 40px;
     }
     
-    .card input:focus {
+    .card input:focus, .card select:focus {
       outline: none;
       border-color: var(--secondary-color);
       box-shadow: 0 0 0 3px rgba(164, 80, 139, 0.2);
@@ -153,32 +187,16 @@
       transform: translateY(0);
     }
     
-    .card button .button-text {
+    .button-text {
       position: relative;
       z-index: 1;
     }
     
-    .card button::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 5px;
-      height: 5px;
-      background: rgba(255, 255, 255, 0.5);
-      opacity: 0;
-      border-radius: 100%;
-      transform: scale(1, 1) translate(-50%, -50%);
-      transform-origin: 50% 50%;
-    }
-    
-    .card button:focus:not(:active)::after {
-      animation: ripple 0.6s ease-out;
-    }
-    
-    .nfc-icon {
-      font-size: 24px;
-      margin-left: 10px;
+    .error-message {
+      color: var(--error-color);
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
     }
     
     .nav {
@@ -205,10 +223,6 @@
     .nav button:hover, .nav button:focus {
       background: #FFC300;
       transform: translateY(-2px);
-    }
-    
-    .nav button:active {
-      transform: translateY(0);
     }
     
     .loading {
@@ -242,13 +256,6 @@
       color: white;
       margin-top: 15px;
       font-size: 18px;
-    }
-    
-    .error-message {
-      color: var(--error-color);
-      font-size: 14px;
-      margin-top: 5px;
-      display: none;
     }
     
     /* واجهة الكاميرا الوهمية */
@@ -350,6 +357,107 @@
       animation: pulse 2s infinite;
     }
     
+    /* نتائج البحث */
+    .results-section {
+      display: none;
+      background: #fff;
+      border-radius: var(--border-radius);
+      padding: 20px;
+      margin: 15px 0;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      animation: fadeIn 0.5s ease;
+    }
+    
+    .results-section.active {
+      display: block;
+    }
+    
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .result-title {
+      color: var(--primary-color);
+      margin: 0;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .result-close {
+      background: none;
+      border: none;
+      color: var(--error-color);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    
+    .result-content {
+      margin-top: 15px;
+    }
+    
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    
+    .result-item:last-child {
+      border-bottom: none;
+    }
+    
+    .result-label {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    
+    .result-value {
+      color: var(--text-dark);
+      text-align: left;
+    }
+    
+    .no-results {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-dark);
+    }
+    
+    .no-results i {
+      font-size: 40px;
+      color: #ccc;
+      margin-bottom: 10px;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    
+    .status-clean {
+      background-color: #e6f7ee;
+      color: var(--success-color);
+    }
+    
+    .status-wanted {
+      background-color: #fee;
+      color: var(--error-color);
+    }
+    
+    .status-pending {
+      background-color: #fff8e6;
+      color: #f39c12;
+    }
+    
     @keyframes scanning {
       0% { transform: translateY(-100%); }
       100% { transform: translateY(100%); }
@@ -365,15 +473,9 @@
       to { transform: rotate(360deg); }
     }
     
-    @keyframes ripple {
-      0% {
-        transform: scale(0, 0);
-        opacity: 0.5;
-      }
-      100% {
-        transform: scale(20, 20);
-        opacity: 0;
-      }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
     @media (max-width: 480px) {
@@ -385,7 +487,7 @@
         padding: 15px;
       }
       
-      .card input, .card button {
+      .card input, .card select, .card button {
         padding: 12px;
       }
       
@@ -401,61 +503,175 @@
       .camera-view {
         height: 50vh;
       }
+      
+      .result-title {
+        font-size: 18px;
+      }
     }
   </style>
 </head>
 <body>
-  <h2>اختر طريقة الاستعلام</h2>
+  <h2>نظام الاستعلام الأمني</h2>
 
-  <div class="department-selector" tabindex="0" role="region" aria-labelledby="departmentHeading">
-    <h3 id="departmentHeading"><i class="fas fa-building" aria-hidden="true"></i> الدائرة المراد البحث فيها</h3>
-    <label for="department">اختر الدائرة:</label>
-    <select id="department" aria-label="اختر الدائرة">
-      <option value="">-- اختر الدائرة --</option>
-      <option value="traffic">مديرية المرور العامة</option>
-      <option value="forensic">مديرية الأدلة الجنائية</option>
-      <option value="civil">مديرية الأحوال المدنية والجوازات والإقامة</option>
-      <option value="intelligence">وكالة الاستخبارات والتحقيقات الاتحادية</option>
-    </select>
+  <!-- القائمة الرئيسية لاختيار نوع الاستعلام -->
+  <div class="main-menu" id="mainMenu" tabindex="0">
+    <h3 id="menuHeading">
+      <span><i class="fas fa-list"></i> اختر طريقة الاستعلام</span>
+      <i class="fas fa-chevron-down"></i>
+    </h3>
+    <div class="menu-options" role="menu" aria-labelledby="menuHeading">
+      <div class="menu-option" data-query="wanted" role="menuitem">
+        <i class="fas fa-search"></i> استعلام عن المطلوبين
+      </div>
+      <div class="menu-option" data-query="documents" role="menuitem">
+        <i class="fas fa-file-alt"></i> استعلام عن الوثائق
+      </div>
+      <div class="menu-option" data-query="vehicles" role="menuitem">
+        <i class="fas fa-car"></i> استعلام عن المركبات
+      </div>
+      <div class="menu-option" data-query="permits" role="menuitem">
+        <i class="fas fa-id-card"></i> الاستعلام عن الإجازات والتصاريح الأمنية
+      </div>
+    </div>
   </div>
 
-  <div class="card" tabindex="0" role="region" aria-labelledby="nationalCardHeading">
-    <h3 id="nationalCardHeading"><i class="fas fa-id-card" aria-hidden="true"></i> إدخال رقم البطاقة الوطنية</h3>
-    <div class="input-group">
-      <input type="text" 
-             id="nationalId" 
-             placeholder="أدخل الرقم الوطني" 
-             aria-label="رقم البطاقة الوطنية" 
-             inputmode="numeric" 
-             pattern="[0-9]{10}" 
-             maxlength="10"
-             required
-             aria-required="true">
-      <i class="fas fa-id-card input-icon" aria-hidden="true"></i>
+  <!-- قسم استعلام المطلوبين -->
+  <div class="query-section" id="wantedQuery">
+    <div class="card" tabindex="0">
+      <h3><i class="fas fa-id-card"></i> إدخال رقم البطاقة الوطنية</h3>
+      <div class="input-group">
+        <input type="text" 
+               id="nationalId" 
+               placeholder="أدخل الرقم الوطني" 
+               inputmode="numeric" 
+               pattern="[0-9]{10}" 
+               maxlength="10"
+               required>
+        <i class="fas fa-id-card input-icon"></i>
+      </div>
+      <div id="nationalIdError" class="error-message">
+        الرقم الوطني يجب أن يتكون من 10 أرقام
+      </div>
+      <button id="nationalIdBtn">
+        <span class="button-text">استعلام</span>
+      </button>
     </div>
-    <div id="nationalIdError" class="error-message" role="alert">
-      الرقم الوطني يجب أن يتكون من 10 أرقام
+
+    <div class="card" tabindex="0">
+      <h3><i class="fas fa-wifi"></i> قراءة البطاقة باستخدام NFC</h3>
+      <button id="nfcBtn">
+        <span class="button-text">تشغيل NFC</span>
+      </button>
     </div>
-    <button id="nationalIdBtn" role="button" aria-label="استعلام باستخدام الرقم الوطني">
-      <span class="button-text">استعلام</span>
-    </button>
   </div>
 
-  <div class="card" tabindex="0" role="region" aria-labelledby="nfcCardHeading">
-    <h3 id="nfcCardHeading"><i class="fas fa-wifi nfc-icon" aria-hidden="true"></i> قراءة البطاقة باستخدام NFC</h3>
-    <button id="nfcBtn" role="button" aria-label="قراءة البطاقة باستخدام NFC">
-      <span class="button-text">تشغيل NFC</span>
-    </button>
+  <!-- قسم استعلام الوثائق -->
+  <div class="query-section" id="documentsQuery">
+    <div class="card" tabindex="0">
+      <h3><i class="fas fa-passport"></i> استعلام عن الوثائق</h3>
+      <div class="input-group">
+        <select id="documentType">
+          <option value="">اختر نوع الوثيقة</option>
+          <option value="passport">جواز السفر</option>
+          <option value="id">البطاقة الوطنية</option>
+          <option value="birth">شهادة الميلاد</option>
+          <option value="other">وثيقة أخرى</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <input type="text" 
+               id="documentNumber" 
+               placeholder="أدخل رقم الوثيقة" 
+               required>
+        <i class="fas fa-file-alt input-icon"></i>
+      </div>
+      <button id="documentQueryBtn">
+        <span class="button-text">استعلام</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- قسم استعلام المركبات -->
+  <div class="query-section" id="vehiclesQuery">
+    <div class="card" tabindex="0">
+      <h3><i class="fas fa-car"></i> استعلام عن المركبات</h3>
+      <div class="input-group">
+        <select id="vehicleProvince">
+          <option value="">اختر محافظة التسجيل</option>
+          <option value="baghdad">بغداد</option>
+          <option value="basra">البصرة</option>
+          <option value="erbil">أربيل</option>
+          <option value="sulaymaniyah">السليمانية</option>
+          <option value="kirkuk">كركوك</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <input type="text" 
+               id="vehicleNumber" 
+               placeholder="أدخل رقم المركبة" 
+               required>
+        <i class="fas fa-car input-icon"></i>
+      </div>
+      <div class="input-group">
+        <select id="vehicleType">
+          <option value="">اختر نوع المركبة</option>
+          <option value="private">خاصة</option>
+          <option value="public">عمومي</option>
+          <option value="government">حكومية</option>
+          <option value="commercial">تجارية</option>
+        </select>
+      </div>
+      <button id="vehicleQueryBtn">
+        <span class="button-text">استعلام</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- قسم الاستعلام عن الإجازات والتصاريح الأمنية -->
+  <div class="query-section" id="permitsQuery">
+    <div class="card" tabindex="0">
+      <h3><i class="fas fa-id-card"></i> الاستعلام عن الإجازات والتصاريح الأمنية</h3>
+      <div class="input-group">
+        <select id="permitType">
+          <option value="">اختر نوع التصريح</option>
+          <option value="vacation">إجازة</option>
+          <option value="security">تصريح أمني</option>
+          <option value="travel">تصريح سفر</option>
+          <option value="other">تصريح آخر</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <input type="text" 
+               id="permitNumber" 
+               placeholder="أدخل رقم التصريح" 
+               required>
+        <i class="fas fa-id-card input-icon"></i>
+      </div>
+      <button id="permitQueryBtn">
+        <span class="button-text">استعلام</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- قسم عرض النتائج -->
+  <div class="results-section" id="resultsSection">
+    <div class="result-header">
+      <h3 class="result-title" id="resultTitle"><i class="fas fa-search"></i> نتائج البحث</h3>
+      <button class="result-close" id="closeResults"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="result-content" id="resultContent">
+      <!-- سيتم ملء المحتوى هنا ديناميكيًا -->
+    </div>
   </div>
 
   <div class="nav">
-    <button onclick="location.href='index.html'" role="button" aria-label="عودة إلى الصفحة الرئيسية">
+    <button onclick="location.href='index.html'">
       <span class="button-text">عودة</span>
     </button>
   </div>
 
-  <div class="loading" id="loadingIndicator" role="status" aria-live="polite">
-    <div class="spinner" aria-hidden="true"></div>
+  <div class="loading" id="loadingIndicator">
+    <div class="spinner"></div>
     <div class="loading-text">جاري معالجة الطلب...</div>
   </div>
 
@@ -488,7 +704,10 @@
   </div>
 
   <script>
-    // NFC Functionality
+    // عناصر DOM
+    const mainMenu = document.getElementById('mainMenu');
+    const menuOptions = document.querySelectorAll('.menu-option');
+    const querySections = document.querySelectorAll('.query-section');
     const nfcBtn = document.getElementById('nfcBtn');
     const nationalIdBtn = document.getElementById('nationalIdBtn');
     const nationalIdInput = document.getElementById('nationalId');
@@ -498,48 +717,70 @@
     const closeCamera = document.getElementById('closeCamera');
     const captureBtn = document.getElementById('captureBtn');
     const cameraView = document.getElementById('cameraView');
-    const departmentSelect = document.getElementById('department');
+    const resultsSection = document.getElementById('resultsSection');
+    const resultContent = document.getElementById('resultContent');
+    const resultTitle = document.getElementById('resultTitle');
+    const closeResults = document.getElementById('closeResults');
     
-    // Validate National ID
+    // تفعيل/تعطيل القائمة الرئيسية
+    mainMenu.addEventListener('click', function() {
+      this.classList.toggle('active');
+    });
+    
+    // اختيار نوع الاستعلام
+    menuOptions.forEach(option => {
+      option.addEventListener('click', function() {
+        const queryType = this.getAttribute('data-query');
+        
+        // إخفاء جميع أقسام الاستعلام
+        querySections.forEach(section => {
+          section.classList.remove('active');
+        });
+        
+        // إظهار القسم المحدد
+        document.getElementById(`${queryType}Query`).classList.add('active');
+        
+        // إغلاق القائمة
+        mainMenu.classList.remove('active');
+        
+        // إخفاء نتائج البحث السابقة
+        resultsSection.classList.remove('active');
+      });
+    });
+    
+    // إغلاق نتائج البحث
+    closeResults.addEventListener('click', () => {
+      resultsSection.classList.remove('active');
+    });
+    
+    // التحقق من الرقم الوطني
     function validateNationalId() {
       const nationalId = nationalIdInput.value.trim();
       const isValid = /^\d{10}$/.test(nationalId);
       
       if (!isValid && nationalId) {
         nationalIdError.style.display = 'block';
-        nationalIdInput.setAttribute('aria-invalid', 'true');
         return false;
       } else {
         nationalIdError.style.display = 'none';
-        nationalIdInput.setAttribute('aria-invalid', 'false');
         return true;
       }
     }
     
-    // Validate Department Selection
-    function validateDepartment() {
-      if (!departmentSelect.value) {
-        alert('يرجى اختيار الدائرة المراد البحث فيها');
-        departmentSelect.focus();
-        return false;
-      }
-      return true;
-    }
-    
-    // Show loading indicator
+    // عرض مؤشر التحميل
     function showLoading(message = 'جاري معالجة الطلب...') {
       loadingIndicator.querySelector('.loading-text').textContent = message;
       loadingIndicator.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
     
-    // Hide loading indicator
+    // إخفاء مؤشر التحميل
     function hideLoading() {
       loadingIndicator.classList.remove('active');
       document.body.style.overflow = '';
     }
     
-    // Simulate API call
+    // محاكاة استدعاء API
     function simulateApiCall(duration = 1500) {
       return new Promise(resolve => {
         setTimeout(() => {
@@ -548,15 +789,275 @@
       });
     }
     
-    // NFC Functionality with Camera Simulation
-    async function initiateNFC() {
-      if (!validateDepartment()) return;
+    // عرض نتائج البحث
+    function showResults(title, data, type) {
+      resultTitle.innerHTML = `<i class="fas fa-${getIconForType(type)}"></i> ${title}`;
       
+      if (data === null || data.error) {
+        // حالة عدم وجود نتائج أو خطأ
+        resultContent.innerHTML = `
+          <div class="no-results">
+            <i class="fas fa-exclamation-circle"></i>
+            <h4>${data?.error || 'لا توجد نتائج مطابقة'}</h4>
+            <p>يرجى التحقق من البيانات المدخلة والمحاولة مرة أخرى</p>
+          </div>
+        `;
+      } else {
+        // حالة وجود نتائج
+        let html = '';
+        
+        if (type === 'wanted') {
+          // نتائج استعلام المطلوبين
+          html = `
+            <div class="result-item">
+              <span class="result-label">الاسم الكامل:</span>
+              <span class="result-value">${data.fullName}</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">رقم البطاقة:</span>
+              <span class="result-value">${data.idNumber}</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">الحالة:</span>
+              <span class="result-value">
+                <span class="status-badge ${data.status === 'wanted' ? 'status-wanted' : 'status-clean'}">
+                  ${data.status === 'wanted' ? 'مطلوب أمنياً' : 'غير مطلوب'}
+                </span>
+              </span>
+            </div>
+          `;
+          
+          if (data.status === 'wanted') {
+            html += `
+              <div class="result-item">
+                <span class="result-label">نوع القضية:</span>
+                <span class="result-value">${data.caseType || 'غير محدد'}</span>
+              </div>
+              <div class="result-item">
+                <span class="result-label">المحافظة:</span>
+                <span class="result-value">${data.province || 'غير محدد'}</span>
+              </div>
+              <div class="result-item">
+                <span class="result-label">ملاحظات:</span>
+                <span class="result-value">${data.notes || 'لا توجد ملاحظات'}</span>
+              </div>
+            `;
+          }
+        } else if (type === 'documents') {
+          // نتائج استعلام الوثائق
+          const docType = {
+            'passport': 'جواز سفر',
+            'id': 'بطاقة وطنية',
+            'birth': 'شهادة ميلاد',
+            'other': 'وثيقة أخرى'
+          }[data.documentType] || data.documentType;
+          
+          html = `
+            <div class="result-item">
+              <span class="result-label">نوع الوثيقة:</span>
+              <span class="result-value">${docType}</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">رقم الوثيقة:</span>
+              <span class="result-value">${data.documentNumber}</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">الحالة:</span>
+              <span class="result-value">
+                <span class="status-badge ${data.status === 'valid' ? 'status-clean' : data.status === 'expired' ? 'status-pending' : 'status-wanted'}">
+                  ${data.status === 'valid' ? 'سارية المفعول' : data.status === 'expired' ? 'منتهية الصلاحية' : 'ملغاة'}
+                </span>
+              </span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">صاحب الوثيقة:</span>
+              <span class="result-value">${data.ownerName || 'غير معروف'}</span>
+            </div>
+          `;
+          
+          if (data.expiryDate) {
+            html += `
+              <div class="result-item">
+                <span class="result-label">تاريخ الانتهاء:</span>
+                <span class="result-value">${data.expiryDate}</span>
+              </div>
+            `;
+          }
+        } else if (type === 'vehicles') {
+          // نتائج استعلام المركبات
+          const vehicleType = {
+            'private': 'مركبة خاصة',
+            'public': 'مركبة عمومية',
+            'government': 'مركبة حكومية',
+            'commercial': 'مركبة تجارية'
+          }[data.vehicleType] || data.vehicleType;
+          
+          const province = {
+            'baghdad': 'بغداد',
+            'basra': 'البصرة',
+            'erbil': 'أربيل',
+            'sulaymaniyah': 'السليمانية',
+            'kirkuk': 'كركوك'
+          }[data.province] || data.province;
+          
+          html = `
+            <div class="result-item">
+              <span class="result-label">رقم المركبة:</span>
+              <span class="result-value">${data.vehicleNumber}</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">نوع المركبة:</span>
+              <span class="result-value">${vehicleType}</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">المحافظة:</span>
+              <span class="result-value">${province}</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">الحالة:</span>
+              <span class="result-value">
+                <span class="status-badge ${data.status === 'clean' ? 'status-clean' : data.status === 'stolen' ? 'status-wanted' : 'status-pending'}">
+                  ${data.status === 'clean' ? 'سليم' : data.status === 'stolen' ? 'مسروقة' : 'مطلوبة للتحقيق'}
+                </span>
+              </span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">المالك:</span>
+              <span class="result-value">${data.ownerName || 'غير معروف'}</span>
+            </div>
+          `;
+          
+          if (data.model) {
+            html += `
+              <div class="result-item">
+                <span class="result-label">الموديل:</span>
+                <span class="result-value">${data.model}</span>
+              </div>
+            `;
+          }
+        } else if (type === 'permits') {
+          // نتائج استعلام التصاريح
+          const permitType = {
+            'vacation': 'إجازة',
+            'security': 'تصريح أمني',
+            'travel': 'تصريح سفر',
+            'other': 'تصريح آخر'
+          }[data.permitType] || data.permitType;
+          
+          html = `
+            <div class="result-item">
+              <span class="result-label">نوع التصريح:</span>
+              <span class="result-value">${permitType}</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">رقم التصريح:</span>
+              <span class="result-value">${data.permitNumber}</span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">الحالة:</span>
+              <span class="result-value">
+                <span class="status-badge ${data.status === 'active' ? 'status-clean' : data.status === 'expired' ? 'status-pending' : 'status-wanted'}">
+                  ${data.status === 'active' ? 'نشط' : data.status === 'expired' ? 'منتهي' : 'ملغى'}
+                </span>
+              </span>
+            </div>
+            <div class="result-item">
+              <span class="result-label">صاحب التصريح:</span>
+              <span class="result-value">${data.ownerName || 'غير معروف'}</span>
+            </div>
+          `;
+          
+          if (data.issueDate) {
+            html += `
+              <div class="result-item">
+                <span class="result-label">تاريخ الإصدار:</span>
+                <span class="result-value">${data.issueDate}</span>
+              </div>
+            `;
+          }
+          
+          if (data.expiryDate) {
+            html += `
+              <div class="result-item">
+                <span class="result-label">تاريخ الانتهاء:</span>
+                <span class="result-value">${data.expiryDate}</span>
+              </div>
+            `;
+          }
+        }
+        
+        resultContent.innerHTML = html;
+      }
+      
+      resultsSection.classList.add('active');
+      setTimeout(() => {
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+    
+    // الحصول على أيقونة حسب نوع الاستعلام
+    function getIconForType(type) {
+      const icons = {
+        'wanted': 'search',
+        'documents': 'file-alt',
+        'vehicles': 'car',
+        'permits': 'id-card'
+      };
+      return icons[type] || 'info-circle';
+    }
+    
+    // إنشاء بيانات وهمية للنتائج
+    function generateMockData(type, queryParams) {
+      // في تطبيق حقيقي، هذه البيانات ستأتي من API
+      const mockData = {
+        wanted: {
+          fullName: 'أحمد محمد علي',
+          idNumber: queryParams.idNumber || '1234567890',
+          status: Math.random() > 0.7 ? 'wanted' : 'clean',
+          caseType: Math.random() > 0.7 ? 'جنائية' : null,
+          province: ['بغداد', 'البصرة', 'أربيل'][Math.floor(Math.random() * 3)],
+          notes: Math.random() > 0.7 ? 'مطلوب للتحقيق في قضية سرقة' : null
+        },
+        documents: {
+          documentType: queryParams.documentType || 'id',
+          documentNumber: queryParams.documentNumber || '987654321',
+          status: ['valid', 'expired', 'cancelled'][Math.floor(Math.random() * 3)],
+          ownerName: 'أحمد محمد علي',
+          expiryDate: '15/08/2025'
+        },
+        vehicles: {
+          vehicleNumber: queryParams.vehicleNumber || 'بغداد 1234',
+          vehicleType: queryParams.vehicleType || 'private',
+          province: queryParams.province || 'baghdad',
+          status: ['clean', 'stolen', 'wanted'][Math.floor(Math.random() * 3)],
+          ownerName: 'أحمد محمد علي',
+          model: '2020 تويوتا كورولا'
+        },
+        permits: {
+          permitType: queryParams.permitType || 'security',
+          permitNumber: queryParams.permitNumber || 'PER-2023-1234',
+          status: ['active', 'expired', 'cancelled'][Math.floor(Math.random() * 3)],
+          ownerName: 'أحمد محمد علي',
+          issueDate: '01/01/2023',
+          expiryDate: '31/12/2023'
+        }
+      };
+      
+      // 10% احتمالية عدم وجود نتائج
+      if (Math.random() < 0.1) {
+        return { error: 'لا توجد نتائج مطابقة للبحث' };
+      }
+      
+      return mockData[type];
+    }
+    
+    // تفعيل NFC مع محاكاة الكاميرا
+    async function initiateNFC() {
       // عرض واجهة الكاميرا الوهمية
       cameraOverlay.classList.add('active');
       document.body.style.overflow = 'hidden';
       
-      // محاكاة اكتشاف البطاقة بعد 3 ثواني إذا لم يضغط المستخدم
+      // محاكاة اكتشاف البطاقة بعد 3 ثواني
       const autoDetect = setTimeout(async () => {
         if (cameraOverlay.classList.contains('active')) {
           await simulateCardDetection();
@@ -583,23 +1084,25 @@
       // محاكاة قراءة البيانات
       await simulateApiCall(2000);
       
-      // إغلاق الكاميرا والانتقال لصفحة النتائج
+      // إغلاق الكاميرا وعرض النتائج
       cameraOverlay.classList.remove('active');
       showLoading('جاري تحميل بيانات البطاقة...');
       
       await simulateApiCall(1000);
-      location.href = 'result.html';
+      hideLoading();
+      
+      // عرض نتائج وهمية للبطاقة
+      const mockData = generateMockData('wanted', { idNumber: '9876543210' });
+      showResults('نتائج البحث عن المطلوبين', mockData, 'wanted');
     }
     
-    // Handle national ID submission
+    // معالجة استعلام الرقم الوطني
     async function handleNationalIdSubmit() {
-      if (!validateDepartment()) return;
       if (!validateNationalId()) return;
       
       if (!nationalIdInput.value.trim()) {
         nationalIdError.textContent = 'يرجى إدخال الرقم الوطني';
         nationalIdError.style.display = 'block';
-        nationalIdInput.setAttribute('aria-invalid', 'true');
         return;
       }
       
@@ -607,15 +1110,100 @@
       
       try {
         await simulateApiCall();
-        location.href = 'result.html';
+        const mockData = generateMockData('wanted', { idNumber: nationalIdInput.value.trim() });
+        showResults('نتائج البحث عن المطلوبين', mockData, 'wanted');
       } catch (error) {
-        hideLoading();
         alert('حدث خطأ أثناء معالجة الطلب');
         console.error('API Error:', error);
+      } finally {
+        hideLoading();
       }
     }
     
-    // Event Listeners
+    // معالجة استعلام الوثائق
+    async function handleDocumentQuery() {
+      const documentType = document.getElementById('documentType').value;
+      const documentNumber = document.getElementById('documentNumber').value.trim();
+      
+      if (!documentType || !documentNumber) {
+        alert('يرجى إدخال جميع البيانات المطلوبة');
+        return;
+      }
+      
+      showLoading('جاري البحث عن الوثيقة...');
+      
+      try {
+        await simulateApiCall();
+        const mockData = generateMockData('documents', { 
+          documentType, 
+          documentNumber 
+        });
+        showResults('نتائج البحث عن الوثيقة', mockData, 'documents');
+      } catch (error) {
+        alert('حدث خطأ أثناء معالجة الطلب');
+        console.error('API Error:', error);
+      } finally {
+        hideLoading();
+      }
+    }
+    
+    // معالجة استعلام المركبات
+    async function handleVehicleQuery() {
+      const province = document.getElementById('vehicleProvince').value;
+      const vehicleNumber = document.getElementById('vehicleNumber').value.trim();
+      const vehicleType = document.getElementById('vehicleType').value;
+      
+      if (!province || !vehicleNumber || !vehicleType) {
+        alert('يرجى إدخال جميع البيانات المطلوبة');
+        return;
+      }
+      
+      showLoading('جاري البحث عن المركبة...');
+      
+      try {
+        await simulateApiCall();
+        const mockData = generateMockData('vehicles', { 
+          province, 
+          vehicleNumber, 
+          vehicleType 
+        });
+        showResults('نتائج البحث عن المركبة', mockData, 'vehicles');
+      } catch (error) {
+        alert('حدث خطأ أثناء معالجة الطلب');
+        console.error('API Error:', error);
+      } finally {
+        hideLoading();
+      }
+    }
+    
+    // معالجة استعلام التصاريح
+    async function handlePermitQuery() {
+      const permitType = document.getElementById('permitType').value;
+      const permitNumber = document.getElementById('permitNumber').value.trim();
+      
+      if (!permitType || !permitNumber) {
+        alert('يرجى إدخال جميع البيانات المطلوبة');
+        return;
+      }
+      
+      showLoading('جاري البحث عن التصريح...');
+      
+      try {
+        await simulateApiCall();
+        const mockData = generateMockData('permits', { 
+          permitType, 
+          permitNumber 
+        });
+        showResults('نتائج البحث عن التصريح', mockData, 'permits');
+      } catch (error) {
+        alert('حدث خطأ أثناء معالجة الطلب');
+        console.error('API Error:', error);
+      } finally {
+        hideLoading();
+      }
+    }
+    
+    // مستمعي الأحداث
     nationalIdInput.addEventListener('input', validateNationalId);
     nationalIdInput.addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
@@ -626,6 +1214,9 @@
     
     nationalIdBtn.addEventListener('click', handleNationalIdSubmit);
     nfcBtn.addEventListener('click', initiateNFC);
+    document.getElementById('documentQueryBtn').addEventListener('click', handleDocumentQuery);
+    document.getElementById('vehicleQueryBtn').addEventListener('click', handleVehicleQuery);
+    document.getElementById('permitQueryBtn').addEventListener('click', handlePermitQuery);
     
     // إغلاق واجهة الكاميرا
     closeCamera.addEventListener('click', () => {
@@ -633,7 +1224,7 @@
       document.body.style.overflow = '';
     });
     
-    // محاكاة التقاط صورة عند الضغط على زر الكاميرا
+    // محاكاة التقاط صورة
     captureBtn.addEventListener('click', async () => {
       cameraView.innerHTML = `
         <div style="color: white; text-align: center; padding: 20px;">
@@ -646,7 +1237,7 @@
       await simulateCardDetection();
     });
     
-    // Service Worker Registration for PWA
+    // تسجيل Service Worker لتطبيق PWA
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js').then(registration => {
@@ -657,13 +1248,9 @@
       });
     }
     
-    // Focus management for better accessibility
+    // التركيز على القائمة الرئيسية عند تحميل الصفحة
     document.addEventListener('DOMContentLoaded', () => {
-      if (window.location.hash === '#nfc') {
-        nfcBtn.focus();
-      } else {
-        departmentSelect.focus();
-      }
+      mainMenu.focus();
     });
   </script>
 </body>
